@@ -7,7 +7,21 @@ class PokemonTypeChip extends StatelessWidget {
     'normal': Colors.grey,
     'fire': Colors.red,
     'water': Colors.blue,
-    // ... resto de los colores
+    'grass': Colors.green,
+    'electric': Colors.yellow,
+    'ice': Colors.lightBlueAccent,
+    'fighting': Colors.brown,
+    'poison': Colors.purple,
+    'ground': Colors.brown,
+    'flying': Colors.lightBlue,
+    'psychic': Colors.pink,
+    'bug': Colors.lightGreen,
+    'rock': Colors.brown,
+    'ghost': Colors.deepPurple,
+    'dragon': Colors.indigo,
+    'dark': Colors.black,
+    'steel': Colors.blueGrey,
+    'fairy': Colors.pinkAccent,
   };
 
   const PokemonTypeChip({
