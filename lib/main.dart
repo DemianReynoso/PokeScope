@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'pages/home/home_page.dart';
+import 'routes/app_routes.dart';
 
 void main() async {
   await initHiveForFlutter(); // Inicializa Hive para el almacenamiento en cache
@@ -27,7 +28,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Pokedex',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: const HomePage(),
+        //home: const HomePage(),
+        initialRoute: AppRoutes.home,
+        onGenerateRoute: AppRoutes.onGenerateRoute,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../routes/app_routes.dart';
 
 class HomePage extends StatelessWidget {
   // Actualizamos la consulta para usar los sprites oficiales
@@ -42,6 +43,14 @@ class HomePage extends StatelessWidget {
   };
 
   const HomePage({super.key});
+
+  void _navigateToPokemonDetail(BuildContext context, int pokemonId) {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.pokemonDetail,
+      arguments: {'id': pokemonId},
+    );
+  }
 
   String capitalize(String text) {
     if (text.isEmpty) return text;
@@ -103,58 +112,60 @@ class HomePage extends StatelessWidget {
               final secondaryType = types.length > 1 ? types[1]['pokemon_v2_type']['name'] : null;
               final spriteUrl = pokemon['pokemon_v2_pokemonsprites'][0]['sprites'];
 
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: pokemonTypeColors[primaryType]?.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: pokemonTypeColors[primaryType] ?? Colors.grey),
-                ),
-                child: Row(
-                  children: [
-                    // Ajustamos el tamaño de la imagen ya que los sprites oficiales son más grandes
-                    Image.network(
-                      spriteUrl ?? '',
-                      height: 80,  // Aumentamos el tamaño
-                      width: 80,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: Center(child: Icon(Icons.error)),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              _buildTypeChip(
-                                primaryType,
-                                pokemonTypeColors[primaryType] ?? Colors.grey,
-                              ),
-                              if (secondaryType != null) ...[
-                                const SizedBox(width: 8),
-                                _buildTypeChip(
-                                  secondaryType,
-                                  pokemonTypeColors[secondaryType] ?? Colors.grey,
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
+              return InkWell(
+                onTap: () => _navigateToPokemonDetail(context, int.parse(pokemon['id'].toString())),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: pokemonTypeColors[primaryType]?.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: pokemonTypeColors[primaryType] ?? Colors.grey),
+                  ),
+                  child: Row(
+                    children: [
+                      Image.network(
+                        spriteUrl ?? '',
+                        height: 80,
+                        width: 80,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: Center(child: Icon(Icons.error)),
+                          );
+                        },
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                _buildTypeChip(
+                                  primaryType,
+                                  pokemonTypeColors[primaryType] ?? Colors.grey,
+                                ),
+                                if (secondaryType != null) ...[
+                                  const SizedBox(width: 8),
+                                  _buildTypeChip(
+                                    secondaryType,
+                                    pokemonTypeColors[secondaryType] ?? Colors.grey,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

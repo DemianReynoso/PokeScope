@@ -6,6 +6,7 @@ import 'widgets/pokemon_metric.dart';
 import 'widgets/pokemon_ability_card.dart';
 import 'widgets/pokemon_stat_bar.dart';
 import 'widgets/pokemon_evolution_chain.dart';
+import '../../routes/app_routes.dart';
 
 class PokemonDetailPage extends StatelessWidget {
   final int pokemonId;
@@ -79,11 +80,11 @@ class PokemonDetailPage extends StatelessWidget {
   });
 
   void _handlePokemonTap(BuildContext context, int pokemonId) {
-    Navigator.pushReplacement(
+    // Usar pushReplacementNamed en lugar de pushReplacement
+    Navigator.pushReplacementNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => PokemonDetailPage(pokemonId: pokemonId),
-      ),
+      AppRoutes.pokemonDetail,
+      arguments: {'id': pokemonId},
     );
   }
 
@@ -181,7 +182,7 @@ class PokemonDetailPage extends StatelessWidget {
       body: Query(
         options: QueryOptions(
           document: gql(fetchPokemonQuery),
-          variables: {'id': pokemonId},
+          variables: {'pokemonId': pokemonId},
         ),
         builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.isLoading) {
