@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 class PokemonConstants {
   // Colores de tipos
   static const Map<String, Color> typeColors = {
-    'normal': Colors.grey,
-    'fire': Colors.red,
-    'water': Colors.blue,
-    'grass': Colors.green,
-    'electric': Colors.yellow,
-    'ice': Colors.lightBlueAccent,
-    'fighting': Colors.brown,
-    'poison': Colors.purple,
-    'ground': Colors.brown,
-    'flying': Colors.lightBlue,
-    'psychic': Colors.pink,
-    'bug': Colors.lightGreen,
-    'rock': Colors.brown,
-    'ghost': Colors.deepPurple,
-    'dragon': Colors.indigo,
-    'dark': Colors.black,
-    'steel': Colors.blueGrey,
-    'fairy': Colors.pinkAccent,
+    'normal': Color(0xFF9099A1),    // Gris neutro
+    'fire': Color(0xFFFF9C54),      // Naranja fuego
+    'water': Color(0xFF4D90D5),     // Azul agua
+    'grass': Color(0xFF63BB5B),     // Verde hierba
+    'electric': Color(0xFFF3D23B),  // Amarillo eléctrico
+    'ice': Color(0xFF74CEC0),       // Azul hielo
+    'fighting': Color(0xFFCE4069),  // Rojo lucha
+    'poison': Color(0xFFAB6AC8),    // Morado veneno
+    'ground': Color(0xFFD97746),    // Marrón tierra
+    'flying': Color(0xFF8FA8DD),    // Azul celeste
+    'psychic': Color(0xFFFA7179),   // Rosa psíquico
+    'bug': Color(0xFF90C12C),       // Verde insecto
+    'rock': Color(0xFFC7B78B),      // Marrón roca
+    'ghost': Color(0xFF5269AC),     // Morado fantasma
+    'dragon': Color(0xFF0A6DC4),    // Azul dragón
+    'dark': Color(0xFF5A5366),      // Gris oscuro
+    'steel': Color(0xFF5A8EA1),     // Azul acero
+    'fairy': Color(0xFFEC8FE6),     // Rosa hada
   };
 
   // Generaciones disponibles
