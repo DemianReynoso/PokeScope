@@ -62,3 +62,22 @@ class FilterBarConstants {
 class PokemonListConstants {
   static const String noResultsMessage = 'No Pokemon found with current filters';
 }
+
+class PokemonDetailStyles {
+  // Containers
+  static const double containerRadius = 12.0;
+  static const double containerPadding = 16.0;
+  static const double metricWidth = 120.0;
+  static const double backgroundOpacity = 0.1;
+
+  // Typography
+  static const double descriptionFontSize = 14.0;
+  static const double descriptionLineHeight = 1.5;
+  static const double metricLabelSize = 14.0;
+  static const double metricValueSize = 16.0;
+
+  // Colors
+  static const Color textPrimary = Colors.black87;
+  static const Color textSecondary = Colors.black54;
+  static final Color containerBackground = Colors.grey.withOpacity(backgroundOpacity);
+}

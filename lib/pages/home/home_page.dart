@@ -1,4 +1,3 @@
-// lib/pages/home/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants/pokemon_constants.dart';
@@ -107,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                 return PokemonList(
                   result: result,
                   onPokemonTap: _navigateToPokemonDetail,
+                  fetchMore: fetchMore,
                 );
               },
             ),

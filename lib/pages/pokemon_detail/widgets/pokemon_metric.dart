@@ -13,6 +13,7 @@ class PokemonMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 120,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.1),
