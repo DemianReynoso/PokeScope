@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'pages/home/home_page.dart';
 import 'routes/app_routes.dart';
 
 void main() async {

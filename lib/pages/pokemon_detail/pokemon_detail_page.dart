@@ -96,9 +96,9 @@ class PokemonDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           PokemonConstants.abilitiesTitle,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ...abilities.map(
               (ability) => PokemonAbilityCard(
@@ -116,9 +116,9 @@ class PokemonDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           PokemonConstants.baseStatsTitle,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ...stats.map(
               (stat) => PokemonStatBar(

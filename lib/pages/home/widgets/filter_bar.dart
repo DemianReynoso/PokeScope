@@ -47,9 +47,9 @@ class FilterBar extends StatelessWidget {
 
     return DropdownButton<String>(
       value: selectedType.isEmpty ? null : selectedType,
-      hint: Text(FilterBarConstants.typeHint),
+      hint: const Text(FilterBarConstants.typeHint),
       items: [
-        DropdownMenuItem(
+        const DropdownMenuItem(
           value: '',
           child: Text(FilterBarConstants.allTypesLabel),
         ),
@@ -65,9 +65,9 @@ class FilterBar extends StatelessWidget {
   Widget _buildGenerationDropdown() {
     return DropdownButton<int>(
       value: selectedGeneration == 0 ? null : selectedGeneration,
-      hint: Text(FilterBarConstants.generationHint),
+      hint: const Text(FilterBarConstants.generationHint),
       items: [
-        DropdownMenuItem(
+        const DropdownMenuItem(
           value: 0,
           child: Text(FilterBarConstants.allGensLabel),
         ),

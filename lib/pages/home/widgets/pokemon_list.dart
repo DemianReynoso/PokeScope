@@ -89,7 +89,7 @@ class _PokemonListState extends State<PokemonList> {
     }
 
     if (widget.result.hasException) {
-      return Center(child: Text(PokemonListConstants.noResultsMessage));
+      return const Center(child: Text(PokemonListConstants.noResultsMessage));
     }
 
     final pokemons = widget.result.data?['pokemon_v2_pokemon'] as List? ?? [];
