@@ -21,7 +21,7 @@ class PokemonHeader extends StatelessWidget {
       children: [
         Text(
           StringUtils.capitalize(name),
-          style: TextStyle( // Actualizado para usar textColor
+          style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
             color: textColor,
@@ -29,10 +29,10 @@ class PokemonHeader extends StatelessWidget {
         ),
         Text(
           '#${id.toString().padLeft(3, '0')}',
-          style: TextStyle( // Actualizado para usar textColor
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: textColor.withOpacity(0.7), // Podemos usar opacidad para diferenciarlo
+            color: textColor.withOpacity(0.7),
           ),
         ),
       ],

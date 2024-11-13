@@ -105,7 +105,7 @@ class PokemonDetailPage extends StatelessWidget {
 
             return PokemonAbilityCard(
               name: ability['pokemon_v2_ability']['name'],
-              description: description,  // Ya limpio
+              description: description,
               isHidden: ability['is_hidden'],
               backgroundColor: backgroundColor,
               accentColor: accentColor,
