@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants/pokemon_constants.dart';
 import '../../queries/pokemon_queries.dart';
-import '../../utils/string_utils.dart';
 import '../../routes/app_routes.dart';
 import 'widgets/pokemon_header.dart';
 import 'widgets/pokemon_type_chip.dart';
@@ -19,26 +18,16 @@ class PokemonDetailPage extends StatelessWidget {
     required this.pokemonId,
   });
 
+  Color _getTextColor(Color baseColor, {bool isTitle = false}) {
+    final greyAmount = isTitle ? 0.3 : 0.5;
+    return Color.lerp(baseColor, Colors.grey[800]!, greyAmount)!;
+  }
+
   void _handlePokemonTap(BuildContext context, int pokemonId) {
     Navigator.pushReplacementNamed(
       context,
       AppRoutes.pokemonDetail,
       arguments: {'id': pokemonId},
-    );
-  }
-
-  Widget _buildSprite(String spriteUrl) {
-    return Image.network(
-      spriteUrl,
-      height: 200,
-      width: 200,
-      errorBuilder: (context, error, stackTrace) {
-        return const SizedBox(
-          height: 200,
-          width: 200,
-          child: Center(child: Icon(Icons.error)),
-        );
-      },
     );
   }
 
@@ -53,7 +42,7 @@ class PokemonDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDescription(String description, int height, int weight) {
+  Widget _buildDescription(String description, int height, int weight, Color backgroundColor, Color textColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -61,17 +50,16 @@ class PokemonDetailPage extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.1),
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             description.replaceAll('\n', ' '),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.5,
-              color: Colors.black87,
+              color: textColor,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: 16),
@@ -80,11 +68,17 @@ class PokemonDetailPage extends StatelessWidget {
           children: [
             PokemonMetric(
               label: PokemonConstants.heightLabel,
-              value: StringUtils.formatHeight(height),
+              value: '${height / 10} m',
+              backgroundColor: backgroundColor,
+              textColor: textColor,
+              labelColor: textColor.withOpacity(0.8),
             ),
             PokemonMetric(
               label: PokemonConstants.weightLabel,
-              value: StringUtils.formatWeight(weight),
+              value: '${weight / 10} kg',
+              backgroundColor: backgroundColor,
+              textColor: textColor,
+              labelColor: textColor.withOpacity(0.8),
             ),
           ],
         ),
@@ -92,38 +86,52 @@ class PokemonDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAbilities(List<dynamic> abilities) {
+  Widget _buildAbilities(List<dynamic> abilities, Color backgroundColor, Color accentColor, Color textColor, Color titleColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           PokemonConstants.abilitiesTitle,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
         ),
         ...abilities.map(
               (ability) => PokemonAbilityCard(
             name: ability['pokemon_v2_ability']['name'],
-            description: ability['pokemon_v2_ability']
-            ['pokemon_v2_abilityflavortexts'][0]['flavor_text'],
+            description: ability['pokemon_v2_ability']['pokemon_v2_abilityflavortexts'][0]['flavor_text'],
             isHidden: ability['is_hidden'],
+            backgroundColor: backgroundColor,
+            accentColor: accentColor,
+            textColor: textColor,
+            titleColor: titleColor,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildStats(List<dynamic> stats) {
+  Widget _buildStats(List<dynamic> stats, Color barColor, Color backgroundColor, Color textColor, Color titleColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           PokemonConstants.baseStatsTitle,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
         ),
         ...stats.map(
               (stat) => PokemonStatBar(
             name: stat['pokemon_v2_stat']['name'],
             value: stat['base_stat'],
+            barColor: barColor,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
           ),
         ),
       ],
@@ -132,59 +140,120 @@ class PokemonDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Query(
-        options: QueryOptions(
-          document: gql(PokemonQueries.fetchPokemonDetails),
-          variables: {'pokemonId': pokemonId},
-        ),
-        builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-          if (result.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (result.hasException) {
-            return Center(child: Text(result.exception.toString()));
-          }
-
-          final pokemon = result.data?['pokemon_v2_pokemon_by_pk'];
-
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  PokemonHeader(
-                    name: pokemon['name'],
-                    id: pokemon['id'],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSprite(pokemon['pokemon_v2_pokemonsprites'][0]['sprites']),
-                  const SizedBox(height: 16),
-                  _buildTypes(pokemon['pokemon_v2_pokemontypes']),
-                  const SizedBox(height: 24),
-                  _buildDescription(
-                    pokemon['pokemon_v2_pokemonspecy']
-                    ['pokemon_v2_pokemonspeciesflavortexts'][0]['flavor_text'],
-                    pokemon['height'],
-                    pokemon['weight'],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildAbilities(pokemon['pokemon_v2_pokemonabilities']),
-                  const SizedBox(height: 24),
-                  _buildStats(pokemon['pokemon_v2_pokemonstats']),
-                  const SizedBox(height: 24),
-                  PokemonEvolutionChain(
-                    evolutionChainData: result.data?['pokemon_v2_evolutionchain'][0],
-                    onPokemonTap: (pokemonId) => _handlePokemonTap(context, pokemonId),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+    return Query(
+      options: QueryOptions(
+        document: gql(PokemonQueries.fetchPokemonDetails),
+        variables: {'pokemonId': pokemonId},
       ),
+      builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+        if (result.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (result.hasException) {
+          return Scaffold(
+            body: Center(child: Text(result.exception.toString())),
+          );
+        }
+
+        final pokemon = result.data?['pokemon_v2_pokemon_by_pk'];
+        final primaryType = pokemon['pokemon_v2_pokemontypes'][0]['pokemon_v2_type']['name'];
+        final primaryColor = PokemonConstants.typeColors[primaryType]!;
+
+        final backgroundColor = Color.lerp(primaryColor, Colors.white, 0.40);
+        final containerColor = Color.lerp(backgroundColor!, Colors.white, 0.60);
+        final textColor = _getTextColor(primaryColor);
+        final titleColor = _getTextColor(primaryColor, isTitle: true);
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: PokemonHeader(
+                          name: pokemon['name'],
+                          id: pokemon['id'],
+                          textColor: titleColor,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: containerColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Image.network(
+                          pokemon['pokemon_v2_pokemonsprites'][0]['sprites'],
+                          height: 200,
+                          width: 200,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const SizedBox(
+                              height: 200,
+                              width: 200,
+                              child: Center(child: Icon(Icons.error)),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTypes(pokemon['pokemon_v2_pokemontypes']),
+                      const SizedBox(height: 24),
+                      _buildDescription(
+                        pokemon['pokemon_v2_pokemonspecy']['pokemon_v2_pokemonspeciesflavortexts'][0]['flavor_text'],
+                        pokemon['height'],
+                        pokemon['weight'],
+                        containerColor!,
+                        textColor,
+                      ),
+                      const SizedBox(height: 24),
+                      _buildAbilities(
+                        pokemon['pokemon_v2_pokemonabilities'],
+                        containerColor,
+                        primaryColor,
+                        textColor,
+                        titleColor,
+                      ),
+                      const SizedBox(height: 24),
+                      _buildStats(
+                        pokemon['pokemon_v2_pokemonstats'],
+                        primaryColor,
+                        containerColor,
+                        textColor,
+                        titleColor,
+                      ),
+                      const SizedBox(height: 24),
+                      PokemonEvolutionChain(
+                        evolutionChainData: result.data?['pokemon_v2_evolutionchain'][0],
+                        onPokemonTap: (id) => _handlePokemonTap(context, id),
+                        backgroundColor: containerColor,
+                        textColor: textColor,
+                        titleColor: titleColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

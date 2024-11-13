@@ -4,12 +4,20 @@ class PokemonAbilityCard extends StatelessWidget {
   final String name;
   final String description;
   final bool isHidden;
+  final Color backgroundColor;
+  final Color accentColor;
+  final Color textColor;
+  final Color titleColor;
 
   const PokemonAbilityCard({
     super.key,
     required this.name,
     required this.description,
     required this.isHidden,
+    required this.backgroundColor,
+    required this.accentColor,
+    required this.textColor,
+    required this.titleColor,
   });
 
   @override
@@ -18,7 +26,7 @@ class PokemonAbilityCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -28,9 +36,10 @@ class PokemonAbilityCard extends StatelessWidget {
             children: [
               Text(
                 name.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
+                  color: titleColor,
                 ),
               ),
               if (isHidden) ...[
@@ -38,13 +47,13 @@ class PokemonAbilityCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.2),
+                    color: accentColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Hidden',
                     style: TextStyle(
-                      color: Colors.purple,
+                      color: accentColor,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -56,7 +65,10 @@ class PokemonAbilityCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             description,
-            style: const TextStyle(color: Colors.black87),
+            style: TextStyle(
+              color: textColor,
+              height: 1.5,
+            ),
           ),
         ],
       ),

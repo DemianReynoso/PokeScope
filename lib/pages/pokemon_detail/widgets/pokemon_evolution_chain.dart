@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
-import 'evolution_pokemon_card.dart.dart';
+import '../../../constants/pokemon_constants.dart';
+import 'evolution_pokemon_card.dart';
 import 'evolution_arrow.dart';
 
 class PokemonEvolutionChain extends StatelessWidget {
   final Map<String, dynamic> evolutionChainData;
   final Function(int) onPokemonTap;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color titleColor;
 
   const PokemonEvolutionChain({
     super.key,
     required this.evolutionChainData,
     required this.onPokemonTap,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.titleColor,
   });
 
   List<Map<String, dynamic>> _organizeEvolutionChain(List<dynamic> species) {
-    // Ordenamos las especies por su ID de evolución
     final List<Map<String, dynamic>> evolutionStages = [];
-
-    // Encontramos la primera forma (null evolves_from_species_id)
     final baseForm = species.firstWhere(
           (s) => s['evolves_from_species_id'] == null,
     );
     evolutionStages.add(baseForm);
 
-    // Encontramos las evoluciones subsecuentes
     while (true) {
       final currentStage = evolutionStages.last;
       final nextEvolution = species.firstWhere(
@@ -56,40 +59,48 @@ class PokemonEvolutionChain extends StatelessWidget {
     final species = evolutionChainData['pokemon_v2_pokemonspecies'];
     final evolutionStages = _organizeEvolutionChain(species);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16),
-          child: Text(
-            'Evolution Chain',
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            PokemonConstants.evolutionChainTitle,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              color: titleColor,
             ),
           ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (int i = 0; i < evolutionStages.length; i++) ...[
-                EvolutionPokemonCard(
-                  pokemonData: evolutionStages[i]['pokemon_v2_pokemons'][0],
-                  speciesData: evolutionStages[i],
-                  onTap: () => onPokemonTap(evolutionStages[i]['id']),
-                ),
-                if (i < evolutionStages.length - 1) ...[
-                  EvolutionArrow(
-                    triggerText: _getEvolutionTrigger(evolutionStages[i + 1]),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < evolutionStages.length; i++) ...[
+                  EvolutionPokemonCard(
+                    pokemonData: evolutionStages[i]['pokemon_v2_pokemons'][0],
+                    speciesData: evolutionStages[i],
+                    onTap: () => onPokemonTap(evolutionStages[i]['id']),
+                    textColor: textColor,
                   ),
+                  if (i < evolutionStages.length - 1) ...[
+                    EvolutionArrow(
+                      triggerText: _getEvolutionTrigger(evolutionStages[i + 1]),
+                      textColor: textColor,
+                    ),
+                  ],
                 ],
               ],
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
