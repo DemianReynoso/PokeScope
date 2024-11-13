@@ -1,5 +1,8 @@
+// lib/pages/home/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../constants/pokemon_constants.dart';
+import '../../queries/pokemon_queries.dart';
 import '../../routes/app_routes.dart';
 import 'widgets/pokemon_search_bar.dart';
 import 'widgets/filter_bar.dart';
@@ -16,62 +19,8 @@ class _HomePageState extends State<HomePage> {
   String searchQuery = '';
   String selectedType = '';
   int selectedGeneration = 0;
-  String sortBy = 'id';
+  String sortBy = HomeConstants.defaultSortField;
   bool sortAscending = true;
-
-  static const Map<String, Color> pokemonTypeColors = {
-    'normal': Colors.grey,
-    'fire': Colors.red,
-    'water': Colors.blue,
-    'grass': Colors.green,
-    'electric': Colors.yellow,
-    'ice': Colors.lightBlueAccent,
-    'fighting': Colors.brown,
-    'poison': Colors.purple,
-    'ground': Colors.brown,
-    'flying': Colors.lightBlue,
-    'psychic': Colors.pink,
-    'bug': Colors.lightGreen,
-    'rock': Colors.brown,
-    'ghost': Colors.deepPurple,
-    'dragon': Colors.indigo,
-    'dark': Colors.black,
-    'steel': Colors.blueGrey,
-    'fairy': Colors.pinkAccent,
-  };
-
-  final String fetchPokemonQuery = """
-    query getPokemonForHomepage(
-      \$limit: Int, 
-      \$offset: Int,
-      \$where: pokemon_v2_pokemon_bool_exp,
-      \$orderBy: [pokemon_v2_pokemon_order_by!]
-    ) {
-      pokemon_v2_pokemon(
-        limit: \$limit, 
-        offset: \$offset,
-        where: \$where,
-        order_by: \$orderBy
-      ) {
-        id
-        name
-        pokemon_v2_pokemonsprites {
-          sprites(path: "other.official-artwork.front_default")
-        }
-        pokemon_v2_pokemontypes {
-          pokemon_v2_type {
-            name
-          }
-        }
-        pokemon_v2_pokemonspecy {
-          generation_id
-        }
-      }
-    }
-  """;
-
-  List<String> get pokemonTypes => pokemonTypeColors.keys.toList();
-  final List<int> generations = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   void _navigateToPokemonDetail(BuildContext context, int pokemonId) {
     Navigator.pushNamed(
@@ -79,11 +28,6 @@ class _HomePageState extends State<HomePage> {
       AppRoutes.pokemonDetail,
       arguments: {'id': pokemonId},
     );
-  }
-
-  String capitalize(String text) {
-    if (text.isEmpty) return text;
-    return text[0].toUpperCase() + text.substring(1);
   }
 
   Map<String, dynamic> _buildWhereClause() {
@@ -111,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Map<String, dynamic>> _buildOrderBy() {
-    String field = sortBy == 'name' ? 'name' : 'id';
+    String field = sortBy == HomeConstants.nameSortField ? 'name' : 'id';
     String direction = sortAscending ? 'asc' : 'desc';
     return [{field: direction}];
   }
@@ -120,7 +64,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pokedex'),
+        title: const Text(HomeConstants.appTitle),
       ),
       body: Column(
         children: [
@@ -138,13 +82,12 @@ class _HomePageState extends State<HomePage> {
                   selectedGeneration: selectedGeneration,
                   sortBy: sortBy,
                   sortAscending: sortAscending,
-                  pokemonTypes: pokemonTypes,
-                  generations: generations,
                   onTypeChanged: (value) => setState(() => selectedType = value ?? ''),
                   onGenerationChanged: (value) => setState(() => selectedGeneration = value ?? 0),
-                  onSortTypeChanged: (index) => setState(() => sortBy = index == 0 ? 'id' : 'name'),
+                  onSortTypeChanged: (index) => setState(() {
+                    sortBy = index == 0 ? HomeConstants.defaultSortField : HomeConstants.nameSortField;
+                  }),
                   onSortDirectionChanged: () => setState(() => sortAscending = !sortAscending),
-                  capitalize: capitalize,
                 ),
               ],
             ),
@@ -152,9 +95,9 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Query(
               options: QueryOptions(
-                document: gql(fetchPokemonQuery),
+                document: gql(PokemonQueries.fetchPokemonList),
                 variables: {
-                  'limit': 50,
+                  'limit': HomeConstants.pageLimit,
                   'offset': 0,
                   'where': _buildWhereClause(),
                   'orderBy': _buildOrderBy(),
@@ -163,8 +106,6 @@ class _HomePageState extends State<HomePage> {
               builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
                 return PokemonList(
                   result: result,
-                  typeColors: pokemonTypeColors,
-                  capitalize: capitalize,
                   onPokemonTap: _navigateToPokemonDetail,
                 );
               },

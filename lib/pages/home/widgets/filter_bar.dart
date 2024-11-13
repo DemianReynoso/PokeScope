@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import '../../../constants/pokemon_constants.dart';
+import '../../../utils/string_utils.dart';
 
 class FilterBar extends StatelessWidget {
   final String selectedType;
   final int selectedGeneration;
   final String sortBy;
   final bool sortAscending;
-  final List<String> pokemonTypes;
-  final List<int> generations;
   final ValueChanged<String?> onTypeChanged;
   final ValueChanged<int?> onGenerationChanged;
   final ValueChanged<int> onSortTypeChanged;
   final VoidCallback onSortDirectionChanged;
-  final String Function(String) capitalize;
 
   const FilterBar({
     super.key,
@@ -19,13 +18,10 @@ class FilterBar extends StatelessWidget {
     required this.selectedGeneration,
     required this.sortBy,
     required this.sortAscending,
-    required this.pokemonTypes,
-    required this.generations,
     required this.onTypeChanged,
     required this.onGenerationChanged,
     required this.onSortTypeChanged,
     required this.onSortDirectionChanged,
-    required this.capitalize,
   });
 
   @override
@@ -34,61 +30,82 @@ class FilterBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          DropdownButton<String>(
-            value: selectedType.isEmpty ? null : selectedType,
-            hint: const Text('Type'),
-            items: [
-              const DropdownMenuItem(
-                value: '',
-                child: Text('All Types'),
-              ),
-              ...pokemonTypes.map((type) => DropdownMenuItem(
-                value: type,
-                child: Text(capitalize(type)),
-              )),
-            ],
-            onChanged: onTypeChanged,
-          ),
+          _buildTypeDropdown(),
           const SizedBox(width: 8),
-          DropdownButton<int>(
-            value: selectedGeneration == 0 ? null : selectedGeneration,
-            hint: const Text('Generation'),
-            items: [
-              const DropdownMenuItem(
-                value: 0,
-                child: Text('All Gens'),
-              ),
-              ...generations.map((gen) => DropdownMenuItem(
-                value: gen,
-                child: Text('Gen $gen'),
-              )),
-            ],
-            onChanged: onGenerationChanged,
-          ),
+          _buildGenerationDropdown(),
           const SizedBox(width: 8),
-          ToggleButtons(
-            isSelected: [sortBy == 'id', sortBy == 'name'],
-            onPressed: (index) => onSortTypeChanged(index),
-            children: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('#'),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('A-Z'),
-              ),
-            ],
-          ),
+          _buildSortToggle(),
           const SizedBox(width: 8),
-          IconButton(
-            icon: Icon(
-              sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
-            ),
-            onPressed: onSortDirectionChanged,
-          ),
+          _buildSortDirectionButton(),
         ],
       ),
+    );
+  }
+
+  Widget _buildTypeDropdown() {
+    final types = PokemonConstants.typeColors.keys.toList();
+
+    return DropdownButton<String>(
+      value: selectedType.isEmpty ? null : selectedType,
+      hint: Text(FilterBarConstants.typeHint),
+      items: [
+        DropdownMenuItem(
+          value: '',
+          child: Text(FilterBarConstants.allTypesLabel),
+        ),
+        ...types.map((type) => DropdownMenuItem(
+          value: type,
+          child: Text(StringUtils.capitalize(type)),
+        )),
+      ],
+      onChanged: onTypeChanged,
+    );
+  }
+
+  Widget _buildGenerationDropdown() {
+    return DropdownButton<int>(
+      value: selectedGeneration == 0 ? null : selectedGeneration,
+      hint: Text(FilterBarConstants.generationHint),
+      items: [
+        DropdownMenuItem(
+          value: 0,
+          child: Text(FilterBarConstants.allGensLabel),
+        ),
+        ...PokemonConstants.generations.map((gen) => DropdownMenuItem(
+          value: gen,
+          child: Text('${FilterBarConstants.genPrefix} $gen'),
+        )),
+      ],
+      onChanged: onGenerationChanged,
+    );
+  }
+
+  Widget _buildSortToggle() {
+    return ToggleButtons(
+      isSelected: [
+        sortBy == HomeConstants.defaultSortField,
+        sortBy == HomeConstants.nameSortField
+      ],
+      onPressed: onSortTypeChanged,
+      children: const [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Text(FilterBarConstants.idSort),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Text(FilterBarConstants.nameSort),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSortDirectionButton() {
+    return IconButton(
+      icon: Icon(
+        sortAscending ? Icons.arrow_upward : Icons.arrow_downward,
+      ),
+      onPressed: onSortDirectionChanged,
     );
   }
 }

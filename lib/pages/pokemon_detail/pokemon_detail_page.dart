@@ -1,78 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../constants/pokemon_constants.dart';
+import '../../queries/pokemon_queries.dart';
+import '../../utils/string_utils.dart';
+import '../../routes/app_routes.dart';
 import 'widgets/pokemon_header.dart';
 import 'widgets/pokemon_type_chip.dart';
 import 'widgets/pokemon_metric.dart';
 import 'widgets/pokemon_ability_card.dart';
 import 'widgets/pokemon_stat_bar.dart';
 import 'widgets/pokemon_evolution_chain.dart';
-import '../../routes/app_routes.dart';
 
 class PokemonDetailPage extends StatelessWidget {
   final int pokemonId;
-  static const String fetchPokemonQuery = """
-  query getPokemonDetails(\$pokemonId: Int!) {
-  pokemon_v2_pokemon_by_pk(id: \$pokemonId) {
-    id
-    name
-    height
-    weight
-    pokemon_v2_pokemonsprites {
-      sprites(path: "other.official-artwork.front_default")
-    }
-    pokemon_v2_pokemontypes {
-      pokemon_v2_type {
-        name
-      }
-    }
-    pokemon_v2_pokemonabilities {
-      pokemon_v2_ability {
-        name
-        pokemon_v2_abilityflavortexts(where: {language_id: {_eq: 9}}, limit: 1) {
-          flavor_text
-        }
-      }
-      is_hidden
-    }
-    pokemon_v2_pokemonstats {
-      base_stat
-      pokemon_v2_stat {
-        name
-      }
-    }
-    pokemon_v2_pokemonspecy {
-      pokemon_v2_pokemonspeciesflavortexts(where: {language_id: {_eq: 9}}, limit: 1) {
-        flavor_text
-      }
-      evolution_chain_id
-    }
-  }
-  # Consulta separada para la cadena evolutiva
-  pokemon_v2_evolutionchain(where: {pokemon_v2_pokemonspecies: {pokemon_v2_pokemons: {id: {_eq: \$pokemonId}}}}) {
-    pokemon_v2_pokemonspecies {
-      name
-      id
-      evolves_from_species_id
-      pokemon_v2_pokemonevolutions {
-        min_level
-        pokemon_v2_evolutiontrigger {
-          name
-        }
-      }
-      pokemon_v2_pokemons {
-        pokemon_v2_pokemonsprites {
-          sprites(path: "other.official-artwork.front_default")
-        }
-        pokemon_v2_pokemontypes {
-          pokemon_v2_type {
-            name
-          }
-        }
-      }
-    }
-  }
-}
-"""; // Tu query actual
 
   const PokemonDetailPage({
     super.key,
@@ -80,7 +20,6 @@ class PokemonDetailPage extends StatelessWidget {
   });
 
   void _handlePokemonTap(BuildContext context, int pokemonId) {
-    // Usar pushReplacementNamed en lugar de pushReplacement
     Navigator.pushReplacementNamed(
       context,
       AppRoutes.pokemonDetail,
@@ -124,12 +63,12 @@ class PokemonDetailPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             PokemonMetric(
-              label: 'Height',
-              value: '${height / 10} m',
+              label: PokemonConstants.heightLabel,
+              value: StringUtils.formatHeight(height),
             ),
             PokemonMetric(
-              label: 'Weight',
-              value: '${weight / 10} kg',
+              label: PokemonConstants.weightLabel,
+              value: StringUtils.formatWeight(weight),
             ),
           ],
         ),
@@ -141,9 +80,9 @@ class PokemonDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Abilities',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          PokemonConstants.abilitiesTitle,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ...abilities.map(
               (ability) => PokemonAbilityCard(
@@ -161,9 +100,9 @@ class PokemonDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Base Stats',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          PokemonConstants.baseStatsTitle,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ...stats.map(
               (stat) => PokemonStatBar(
@@ -181,7 +120,7 @@ class PokemonDetailPage extends StatelessWidget {
       appBar: AppBar(),
       body: Query(
         options: QueryOptions(
-          document: gql(fetchPokemonQuery),
+          document: gql(PokemonQueries.fetchPokemonDetails),
           variables: {'pokemonId': pokemonId},
         ),
         builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
