@@ -43,10 +43,18 @@ class PokemonConstants {
 }
 
 class HomeConstants {
-  static const String appTitle = 'Pokedex';
+  static const String appTitle = 'PokeScope';
   static const int pageLimit = 50;
   static const String defaultSortField = 'id';
   static const String nameSortField = 'name';
+
+  // Estilos del AppBar
+  static const Color appBarColor = Color(0xFF2E3340); // Un azul oscuro elegante
+  static const Color appBarTextColor = Colors.white;
+  static const double appBarElevation = 0;
+
+  // Estilos del fondo
+  static const Color backgroundColor = Color(0xFFF5F5F5); // Un gris muy claro
 }
 
 class FilterBarConstants {

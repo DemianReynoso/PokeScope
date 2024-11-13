@@ -60,22 +60,45 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: HomeConstants.backgroundColor,
       appBar: AppBar(
-        title: const Text(HomeConstants.appTitle),
+        centerTitle: true, // Centra el título
+        elevation: HomeConstants.appBarElevation,
+        backgroundColor: HomeConstants.appBarColor,
+        title: Text(
+          HomeConstants.appTitle,
+          style: const TextStyle(
+            color: HomeConstants.appBarTextColor,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2, // Añade un poco de espaciado entre letras
+          ),
+        ),
       ),
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: Colors.white, // Fondo blanco para el área de filtros
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(16),
             child: Column(
               children: [
                 PokemonSearchBar(
                   searchQuery: searchQuery,
                   onSearchChanged: (value) => setState(() => searchQuery = value),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 FilterBar(
                   selectedType: selectedType,
                   selectedGeneration: selectedGeneration,
