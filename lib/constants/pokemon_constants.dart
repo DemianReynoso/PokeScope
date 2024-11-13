@@ -7,7 +7,7 @@ class PokemonConstants {
     'fire': Color(0xFFFF9C54),      // Naranja fuego
     'water': Color(0xFF4D90D5),     // Azul agua
     'grass': Color(0xFF63BB5B),     // Verde hierba
-    'electric': Color(0xFF9E8504),  // Amarillo eléctrico
+    'electric': Color(0xFFEEC711),  // Amarillo eléctrico
     'ice': Color(0xFF74CEC0),       // Azul hielo
     'fighting': Color(0xFFCE4069),  // Rojo lucha
     'poison': Color(0xFFAB6AC8),    // Morado veneno
