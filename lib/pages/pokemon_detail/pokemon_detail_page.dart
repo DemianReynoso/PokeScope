@@ -162,7 +162,7 @@ class PokemonDetailPage extends StatelessWidget {
         final primaryType = pokemon['pokemon_v2_pokemontypes'][0]['pokemon_v2_type']['name'];
         final primaryColor = PokemonConstants.typeColors[primaryType]!;
 
-        final backgroundColor = Color.lerp(primaryColor, Colors.white, 0.40);
+        final backgroundColor = Color.lerp(primaryColor, Colors.white, 0.60);
         final containerColor = Color.lerp(backgroundColor!, Colors.white, 0.60);
         final textColor = _getTextColor(primaryColor);
         final titleColor = _getTextColor(primaryColor, isTitle: true);
