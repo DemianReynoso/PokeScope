@@ -20,8 +20,19 @@ class PokemonAbilityCard extends StatelessWidget {
     required this.titleColor,
   });
 
+  String _cleanDescription(String text) {
+    return text
+        .replaceAll('\n', ' ')
+        .replaceAll('\f', ' ')
+        .replaceAll('\r', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cleanDescription = _cleanDescription(description);
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
@@ -64,11 +75,12 @@ class PokemonAbilityCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            description,
+            cleanDescription,
             style: TextStyle(
               color: textColor,
               height: 1.5,
             ),
+            softWrap: true,
           ),
         ],
       ),

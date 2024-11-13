@@ -86,7 +86,7 @@ class PokemonDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAbilities(List<dynamic> abilities, Color backgroundColor, Color accentColor, Color textColor, Color titleColor) {
+  _buildAbilities(List<dynamic> abilities, Color backgroundColor, Color accentColor, Color textColor, Color titleColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -99,15 +99,20 @@ class PokemonDetailPage extends StatelessWidget {
           ),
         ),
         ...abilities.map(
-              (ability) => PokemonAbilityCard(
-            name: ability['pokemon_v2_ability']['name'],
-            description: ability['pokemon_v2_ability']['pokemon_v2_abilityflavortexts'][0]['flavor_text'],
-            isHidden: ability['is_hidden'],
-            backgroundColor: backgroundColor,
-            accentColor: accentColor,
-            textColor: textColor,
-            titleColor: titleColor,
-          ),
+              (ability) {
+            final description = ability['pokemon_v2_ability']
+            ['pokemon_v2_abilityflavortexts'][0]['flavor_text'];
+
+            return PokemonAbilityCard(
+              name: ability['pokemon_v2_ability']['name'],
+              description: description,  // Ya limpio
+              isHidden: ability['is_hidden'],
+              backgroundColor: backgroundColor,
+              accentColor: accentColor,
+              textColor: textColor,
+              titleColor: titleColor,
+            );
+          },
         ),
       ],
     );
