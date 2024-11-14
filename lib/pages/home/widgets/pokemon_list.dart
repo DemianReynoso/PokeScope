@@ -40,7 +40,7 @@ class _PokemonListState extends State<PokemonList> {
 
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    const threshold = 200.0; // Cargar más cuando falten 200 pixels para llegar al final
+    const threshold = 200.0;
 
     if (maxScroll - currentScroll <= threshold) {
       _loadMore();
@@ -102,7 +102,7 @@ class _PokemonListState extends State<PokemonList> {
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: pokemons.length + 1, // +1 para el indicador de carga
+      itemCount: pokemons.length + 1,
       itemBuilder: (context, index) {
         if (index == pokemons.length) {
           return _isLoadingMore

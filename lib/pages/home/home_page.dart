@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HomeConstants.backgroundColor,
@@ -68,13 +67,13 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true, // Centra el título
         elevation: HomeConstants.appBarElevation,
         backgroundColor: HomeConstants.appBarColor,
-        title: Text(
+        title: const Text(
           HomeConstants.appTitle,
-          style: const TextStyle(
+          style: TextStyle(
             color: HomeConstants.appBarTextColor,
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.2, // Añade un poco de espaciado entre letras
+            letterSpacing: 1.2,
           ),
         ),
       ),
@@ -82,7 +81,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Container(
             decoration: const BoxDecoration(
-              color: Colors.white, // Fondo blanco para el área de filtros
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black12,
