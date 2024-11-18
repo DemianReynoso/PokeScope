@@ -5,13 +5,13 @@ import '../../../utils/string_utils.dart';
 class PokemonHeader extends StatelessWidget {
   final String name;
   final int id;
-  final Color textColor; // Nuevo parámetro
+  final Color textColor;
 
   const PokemonHeader({
     super.key,
     required this.name,
     required this.id,
-    required this.textColor, // Nuevo requerido
+    required this.textColor,
   });
 
   @override

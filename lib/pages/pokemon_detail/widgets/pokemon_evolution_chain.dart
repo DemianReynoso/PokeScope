@@ -19,25 +19,37 @@ class PokemonEvolutionChain extends StatelessWidget {
     required this.titleColor,
   });
 
-  List<Map<String, dynamic>> _organizeEvolutionChain(List<dynamic> species) {
-    final List<Map<String, dynamic>> evolutionStages = [];
+  List<List<Map<String, dynamic>>> _organizeEvolutionChain(List<dynamic> species) {
+    final List<List<Map<String, dynamic>>> evolutionPaths = [];
+
     final baseForm = species.firstWhere(
           (s) => s['evolves_from_species_id'] == null,
     );
-    evolutionStages.add(baseForm);
 
-    while (true) {
-      final currentStage = evolutionStages.last;
-      final nextEvolution = species.firstWhere(
-            (s) => s['evolves_from_species_id'] == currentStage['id'],
-        orElse: () => null,
-      );
+    final firstStageEvolutions = species.where(
+            (s) => s['evolves_from_species_id'] == baseForm['id']
+    ).toList();
 
-      if (nextEvolution == null) break;
-      evolutionStages.add(nextEvolution);
+    if (firstStageEvolutions.isEmpty) {
+      evolutionPaths.add([baseForm]);
+      return evolutionPaths;
     }
 
-    return evolutionStages;
+    for (final firstEvolution in firstStageEvolutions) {
+      final secondStageEvolutions = species.where(
+              (s) => s['evolves_from_species_id'] == firstEvolution['id']
+      ).toList();
+
+      if (secondStageEvolutions.isEmpty) {
+        evolutionPaths.add([baseForm, firstEvolution]);
+      } else {
+        for (final secondEvolution in secondStageEvolutions) {
+          evolutionPaths.add([baseForm, firstEvolution, secondEvolution]);
+        }
+      }
+    }
+
+    return evolutionPaths;
   }
 
   String _getEvolutionTrigger(Map<String, dynamic> species) {
@@ -57,7 +69,7 @@ class PokemonEvolutionChain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final species = evolutionChainData['pokemon_v2_pokemonspecies'];
-    final evolutionStages = _organizeEvolutionChain(species);
+    final evolutionPaths = _organizeEvolutionChain(species);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -77,28 +89,31 @@ class PokemonEvolutionChain extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (int i = 0; i < evolutionStages.length; i++) ...[
-                  EvolutionPokemonCard(
-                    pokemonData: evolutionStages[i]['pokemon_v2_pokemons'][0],
-                    speciesData: evolutionStages[i],
-                    onTap: () => onPokemonTap(evolutionStages[i]['id']),
-                    textColor: textColor,
-                  ),
-                  if (i < evolutionStages.length - 1) ...[
-                    EvolutionArrow(
-                      triggerText: _getEvolutionTrigger(evolutionStages[i + 1]),
+          ...evolutionPaths.map((path) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < path.length; i++) ...[
+                    EvolutionPokemonCard(
+                      pokemonData: path[i]['pokemon_v2_pokemons'][0],
+                      speciesData: path[i],
+                      onTap: () => onPokemonTap(path[i]['id']),
                       textColor: textColor,
                     ),
+                    if (i < path.length - 1) ...[
+                      EvolutionArrow(
+                        triggerText: _getEvolutionTrigger(path[i + 1]),
+                        textColor: textColor,
+                      ),
+                    ],
                   ],
                 ],
-              ],
+              ),
             ),
-          ),
+          )),
         ],
       ),
     );
