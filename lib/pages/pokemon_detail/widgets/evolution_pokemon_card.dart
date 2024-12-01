@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'pokemon_type_chip.dart';
 
 class EvolutionPokemonCard extends StatelessWidget {
   final Map<String, dynamic> pokemonData;

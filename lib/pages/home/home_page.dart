@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants/pokemon_constants.dart';
+import '../../providers/pokemon_favorites_provider.dart';
 import '../../queries/pokemon_queries.dart';
 import '../../routes/app_routes.dart';
 import 'widgets/pokemon_search_bar.dart';
@@ -8,7 +9,13 @@ import 'widgets/filter_bar.dart';
 import 'widgets/pokemon_list.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final PokemonFavoritesProvider favoritesProvider; // Añadir esto
+
+
+  const HomePage({
+    super.key,
+    required this.favoritesProvider
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -129,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                   result: result,
                   onPokemonTap: _navigateToPokemonDetail,
                   fetchMore: fetchMore,
+                  favoritesProvider: widget.favoritesProvider,
                 );
               },
             ),

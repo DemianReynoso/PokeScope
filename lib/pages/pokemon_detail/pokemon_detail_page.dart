@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants/pokemon_constants.dart';
+import '../../providers/pokemon_favorites_provider.dart';
 import '../../queries/pokemon_queries.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/favorite_button.dart';
 import 'widgets/pokemon_header.dart';
 import 'widgets/pokemon_type_chip.dart';
 import 'widgets/pokemon_metric.dart';
@@ -12,10 +14,12 @@ import 'widgets/pokemon_evolution_chain.dart';
 
 class PokemonDetailPage extends StatelessWidget {
   final int pokemonId;
+  final PokemonFavoritesProvider favoritesProvider; // Añadir esta línea
 
   const PokemonDetailPage({
     super.key,
     required this.pokemonId,
+    required this.favoritesProvider,
   });
 
   Color _getTextColor(Color baseColor, {bool isTitle = false}) {
@@ -177,6 +181,20 @@ class PokemonDetailPage extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: backgroundColor,
             elevation: 0,
+            actions: [
+              FutureBuilder<bool>(
+                future: favoritesProvider.isFavorite(pokemon['id']),
+                builder: (context, snapshot) {
+                  return FavoriteButton(
+                    pokemonId: pokemon['id'],
+                    initialValue: snapshot.data ?? false,
+                    onToggle: favoritesProvider.toggleFavorite,
+                    color: primaryColor,
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+            ],
           ),
           body: SingleChildScrollView(
             child: Column(
