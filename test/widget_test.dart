@@ -9,10 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:my_pokedex/main.dart';
+import 'package:my_pokedex/providers/pokemon_favorites_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Configura un cliente GraphQL de prueba
+    final prefs = await SharedPreferences.getInstance();
+    final favoritesProvider = PokemonFavoritesProvider(prefs);
     final HttpLink httpLink = HttpLink('https://beta.pokeapi.co/graphql/v1beta');
     final ValueNotifier<GraphQLClient> client = ValueNotifier(
       GraphQLClient(
@@ -22,7 +26,7 @@ void main() {
     );
 
     // Construye la aplicación y pasa el cliente de prueba
-    await tester.pumpWidget(MyApp(client: client));
+    await tester.pumpWidget(MyApp(client: client, favoritesProvider: favoritesProvider,));
 
     // Continúa con las pruebas como antes
     expect(find.text('0'), findsOneWidget);

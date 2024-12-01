@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../constants/pokemon_constants.dart';
+import '../../../providers/pokemon_favorites_provider.dart';
 import 'pokemon_card.dart';
 
 class PokemonList extends StatefulWidget {
   final QueryResult result;
   final Function(BuildContext, int) onPokemonTap;
   final FetchMore? fetchMore;
+  final PokemonFavoritesProvider favoritesProvider;
 
   const PokemonList({
     super.key,
     required this.result,
     required this.onPokemonTap,
+    required this.favoritesProvider,
     this.fetchMore,
   });
 
@@ -118,6 +121,7 @@ class _PokemonListState extends State<PokemonList> {
         return PokemonCard(
           pokemon: pokemons[index],
           onTap: widget.onPokemonTap,
+          favoritesProvider: widget.favoritesProvider,
         );
       },
     );

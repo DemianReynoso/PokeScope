@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../../constants/pokemon_constants.dart';
+import '../../../providers/pokemon_favorites_provider.dart';
 import '../../../utils/string_utils.dart';
+import '../../../widgets/favorite_button.dart';
 import 'pokemon_type_chip.dart';
 
 class PokemonCard extends StatelessWidget {
   final Map<String, dynamic> pokemon;
   final Function(BuildContext, int) onTap;
+  final PokemonFavoritesProvider favoritesProvider;
 
   const PokemonCard({
     super.key,
     required this.pokemon,
     required this.onTap,
+    required this.favoritesProvider,
   });
 
   @override
@@ -60,6 +64,17 @@ class PokemonCard extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            FutureBuilder<bool>(
+              future: favoritesProvider.isFavorite(pokemon['id']),
+              builder: (context, snapshot) {
+                return FavoriteButton(
+                  pokemonId: pokemon['id'],
+                  initialValue: snapshot.data ?? false,
+                  onToggle: favoritesProvider.toggleFavorite,
+                  color: primaryColor,
+                );
+              },
             ),
           ],
         ),
