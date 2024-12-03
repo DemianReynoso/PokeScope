@@ -25,11 +25,27 @@ class PokemonList extends StatefulWidget {
 class _PokemonListState extends State<PokemonList> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
+  Set<int> _favorites = {};
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    // Cargar favoritos iniciales
+    _loadFavorites();
+    // Suscribirse a cambios
+    widget.favoritesProvider.favoritesStream.listen((favorites) {
+      setState(() {
+        _favorites = favorites;
+      });
+    });
+  }
+
+  Future<void> _loadFavorites() async {
+    final favorites = await widget.favoritesProvider.getFavorites();
+    setState(() {
+      _favorites = favorites;
+    });
   }
 
   @override
@@ -108,22 +124,28 @@ class _PokemonListState extends State<PokemonList> {
       itemCount: pokemons.length + 1,
       itemBuilder: (context, index) {
         if (index == pokemons.length) {
-          return _isLoadingMore
-              ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            ),
-          )
-              : const SizedBox.shrink();
+          return _buildLoadingIndicator();
         }
 
         return PokemonCard(
           pokemon: pokemons[index],
           onTap: widget.onPokemonTap,
           favoritesProvider: widget.favoritesProvider,
+          // Pasar el estado actual del favorito
+          initialFavorite: _favorites.contains(pokemons[index]['id']),
         );
       },
     );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return _isLoadingMore
+        ? const Center(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: CircularProgressIndicator(),
+      ),
+    )
+        : const SizedBox.shrink();
   }
 }
