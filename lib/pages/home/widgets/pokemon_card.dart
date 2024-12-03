@@ -9,12 +9,14 @@ class PokemonCard extends StatelessWidget {
   final Map<String, dynamic> pokemon;
   final Function(BuildContext, int) onTap;
   final PokemonFavoritesProvider favoritesProvider;
+  final bool initialFavorite;
 
   const PokemonCard({
     super.key,
     required this.pokemon,
     required this.onTap,
     required this.favoritesProvider,
+    required this.initialFavorite,
   });
 
   @override
@@ -65,14 +67,18 @@ class PokemonCard extends StatelessWidget {
                 ],
               ),
             ),
-            FutureBuilder<bool>(
-              future: favoritesProvider.isFavorite(pokemon['id']),
+            StreamBuilder<Set<int>>(
+              stream: favoritesProvider.favoritesStream,
+              initialData: favoritesProvider.currentFavorites,
               builder: (context, snapshot) {
+                final isFavorite = snapshot.data?.contains(pokemon['id']) ?? false;
+
                 return FavoriteButton(
                   pokemonId: pokemon['id'],
-                  initialValue: snapshot.data ?? false,
+                  initialValue: isFavorite,
                   onToggle: favoritesProvider.toggleFavorite,
                   color: primaryColor,
+                  favoritesProvider: favoritesProvider,
                 );
               },
             ),

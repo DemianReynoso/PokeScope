@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   final PokemonFavoritesProvider favoritesProvider;
 
   const MyApp({super.key, required this.client,
-    required PokemonFavoritesProvider this.favoritesProvider});
+    required this.favoritesProvider});
 
   @override
   Widget build(BuildContext context) {
