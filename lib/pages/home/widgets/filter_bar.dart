@@ -7,10 +7,12 @@ class FilterBar extends StatelessWidget {
   final int selectedGeneration;
   final String sortBy;
   final bool sortAscending;
+  final bool showOnlyFavorites;  // Nuevo
   final ValueChanged<String?> onTypeChanged;
   final ValueChanged<int?> onGenerationChanged;
   final ValueChanged<int> onSortTypeChanged;
   final VoidCallback onSortDirectionChanged;
+  final VoidCallback onFavoritesToggle;  // Nuevo
 
   const FilterBar({
     super.key,
@@ -18,10 +20,12 @@ class FilterBar extends StatelessWidget {
     required this.selectedGeneration,
     required this.sortBy,
     required this.sortAscending,
+    required this.showOnlyFavorites,  // Nuevo
     required this.onTypeChanged,
     required this.onGenerationChanged,
     required this.onSortTypeChanged,
     required this.onSortDirectionChanged,
+    required this.onFavoritesToggle,  // Nuevo
   });
 
   @override
@@ -30,6 +34,14 @@ class FilterBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          IconButton(
+            icon: Icon(
+              showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
+              color: showOnlyFavorites ? Colors.red : null,
+            ),
+            onPressed: onFavoritesToggle,
+          ),
+          const SizedBox(width: 8),
           _buildTypeDropdown(),
           const SizedBox(width: 8),
           _buildGenerationDropdown(),
