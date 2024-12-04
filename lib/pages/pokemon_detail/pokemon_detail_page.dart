@@ -6,7 +6,9 @@ import '../../constants/pokemon_constants.dart';
 import '../../providers/pokemon_favorites_provider.dart';
 import '../../queries/pokemon_queries.dart';
 import '../../routes/app_routes.dart';
+import '../../services/share_services.dart';
 import '../../widgets/favorite_button.dart';
+import '../../widgets/pokemon_share_card.dart';
 import 'widgets/pokemon_header.dart';
 import 'widgets/pokemon_type_chip.dart';
 import 'widgets/pokemon_metric.dart';
@@ -75,6 +77,50 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
       context,
       AppRoutes.pokemonDetail,
       arguments: {'id': pokemonId},
+    );
+  }
+
+  void _showShareCard(BuildContext context, Map<String, dynamic> pokemon, Color primaryColor) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 24.0,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PokemonShareCard(
+              pokemon: pokemon,
+              primaryColor: primaryColor,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await ShareService.shareCard(
+                        PokemonShareCard.cardKey,
+                        pokemon['name'],
+                      );
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Compartir'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -228,6 +274,12 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                 backgroundColor: backgroundColor,
                 elevation: 0,
                 actions: [
+                  IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () => _showShareCard(context, pokemon, primaryColor),
+                    color: textColor, // Para que coincida con el tema
+                  ),
+                  const SizedBox(width: 8),
                   FavoriteButton(
                     pokemonId: pokemon['id'],
                     initialValue: _isFavorite,
