@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../constants/pokemon_constants.dart';
@@ -73,6 +72,14 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   }
 
   void _handlePokemonTap(BuildContext context, int pokemonId) {
+    Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.pokemonDetail,
+      arguments: {'id': pokemonId},
+    );
+  }
+
+  void _handlePokemonNavigation(BuildContext context, int pokemonId) {
     Navigator.pushReplacementNamed(
       context,
       AppRoutes.pokemonDetail,
@@ -268,6 +275,9 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             final textColor = _getTextColor(primaryColor);
             final titleColor = _getTextColor(primaryColor, isTitle: true);
 
+            final maxId = result.data?['max_id'][0]['id'] as int;
+
+
             return Scaffold(
               backgroundColor: backgroundColor,
               appBar: AppBar(
@@ -277,9 +287,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                   IconButton(
                     icon: const Icon(Icons.share),
                     onPressed: () => _showShareCard(context, pokemon, primaryColor),
-                    color: textColor, // Para que coincida con el tema
+                    color: textColor,
                   ),
-                  const SizedBox(width: 8),
                   FavoriteButton(
                     pokemonId: pokemon['id'],
                     initialValue: _isFavorite,
@@ -374,6 +383,37 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              bottomNavigationBar: Container(
+                color: backgroundColor,
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        iconSize: 40,
+                        icon: Icon(
+                          Icons.arrow_left,
+                          color: pokemon['id'] > 1 ? textColor : textColor.withOpacity(0.3),
+                        ),
+                        onPressed: pokemon['id'] > 1
+                            ? () => _handlePokemonNavigation(context, pokemon['id'] - 1)
+                            : null,
+                      ),
+                      IconButton(
+                        iconSize: 40,
+                        icon: Icon(
+                          Icons.arrow_right,
+                          color: pokemon['id'] < maxId ? textColor : textColor.withOpacity(0.3),
+                        ),
+                        onPressed: pokemon['id'] < maxId
+                            ? () => _handlePokemonNavigation(context, pokemon['id'] + 1)
+                            : null,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

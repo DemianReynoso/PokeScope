@@ -91,6 +91,9 @@ class PokemonQueries {
         }
       }
     }
+    max_id: pokemon_v2_pokemon(order_by: {id: desc}, limit: 1) {
+      id
+    }
   }
   """;
 }
