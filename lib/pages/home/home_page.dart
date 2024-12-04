@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   int selectedGeneration = 0;
   String sortBy = HomeConstants.defaultSortField;
   bool sortAscending = true;
+  bool showOnlyFavorites = false;  // Nuevo
 
   void _navigateToPokemonDetail(BuildContext context, int pokemonId) {
     Navigator.pushNamed(
@@ -38,6 +39,10 @@ class _HomePageState extends State<HomePage> {
 
   Map<String, dynamic> _buildWhereClause() {
     Map<String, dynamic> where = {};
+
+    if (showOnlyFavorites) {
+      where['id'] = {'_in': widget.favoritesProvider.currentFavorites.toList()};
+    }
 
     if (searchQuery.isNotEmpty) {
       where['name'] = {'_ilike': '%$searchQuery%'};
@@ -110,12 +115,14 @@ class _HomePageState extends State<HomePage> {
                   selectedGeneration: selectedGeneration,
                   sortBy: sortBy,
                   sortAscending: sortAscending,
+                  showOnlyFavorites: showOnlyFavorites,  // Nuevo
                   onTypeChanged: (value) => setState(() => selectedType = value ?? ''),
                   onGenerationChanged: (value) => setState(() => selectedGeneration = value ?? 0),
                   onSortTypeChanged: (index) => setState(() {
                     sortBy = index == 0 ? HomeConstants.defaultSortField : HomeConstants.nameSortField;
                   }),
                   onSortDirectionChanged: () => setState(() => sortAscending = !sortAscending),
+                  onFavoritesToggle: () => setState(() => showOnlyFavorites = !showOnlyFavorites),  // Nuevo
                 ),
               ],
             ),
