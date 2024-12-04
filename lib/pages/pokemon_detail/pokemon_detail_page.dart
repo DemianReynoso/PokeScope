@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:my_pokedex/pages/pokemon_detail/widgets/pokemon_moves_table.dart';
 import '../../constants/pokemon_constants.dart';
 import '../../providers/pokemon_favorites_provider.dart';
 import '../../queries/pokemon_queries.dart';
@@ -370,6 +371,13 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                             containerColor,
                             textColor,
                             titleColor,
+                          ),
+                          const SizedBox(height: 24),
+                          PokemonMovesTable(
+                            moves: pokemon['pokemon_v2_pokemonmoves'],
+                            backgroundColor: containerColor,
+                            textColor: textColor,
+                            titleColor: titleColor,
                           ),
                           const SizedBox(height: 24),
                           PokemonEvolutionChain(
