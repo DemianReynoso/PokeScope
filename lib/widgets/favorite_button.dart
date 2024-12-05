@@ -7,14 +7,14 @@ class FavoriteButton extends StatefulWidget {
   final bool initialValue;
   final Function(int) onToggle;
   final Color? color;
-  final PokemonFavoritesProvider favoritesProvider;  // Añadir esto
+  final PokemonFavoritesProvider favoritesProvider;
 
   const FavoriteButton({
     super.key,
     required this.pokemonId,
     required this.initialValue,
     required this.onToggle,
-    required this.favoritesProvider,  // Y esto
+    required this.favoritesProvider,
     this.color,
   });
 
@@ -45,10 +45,6 @@ class _FavoriteButtonState extends State<FavoriteButton>
     super.dispose();
   }
 
-  void _toggleFavorite() async {
-    await widget.onToggle(widget.pokemonId);
-    _controller.forward().then((_) => _controller.reverse());
-  }
 
   @override
   Widget build(BuildContext context) {

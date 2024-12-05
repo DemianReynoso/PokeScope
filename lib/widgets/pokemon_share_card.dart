@@ -3,7 +3,7 @@ import '../../../utils/string_utils.dart';
 import '../../../constants/pokemon_constants.dart';
 
 class PokemonShareCard extends StatelessWidget {
-  static final GlobalKey cardKey = GlobalKey();  // Hacer static el cardKey
+  static final GlobalKey cardKey = GlobalKey();
   final Map<String, dynamic> pokemon;
   final Color primaryColor;
 

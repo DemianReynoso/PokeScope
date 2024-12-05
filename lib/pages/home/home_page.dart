@@ -9,8 +9,7 @@ import 'widgets/filter_bar.dart';
 import 'widgets/pokemon_list.dart';
 
 class HomePage extends StatefulWidget {
-  final PokemonFavoritesProvider favoritesProvider; // Añadir esto
-
+  final PokemonFavoritesProvider favoritesProvider;
 
   const HomePage({
     super.key,
@@ -25,9 +24,10 @@ class _HomePageState extends State<HomePage> {
   String searchQuery = '';
   String selectedType = '';
   int selectedGeneration = 0;
+  String selectedAbility = '';
   String sortBy = HomeConstants.defaultSortField;
   bool sortAscending = true;
-  bool showOnlyFavorites = false;  // Nuevo
+  bool showOnlyFavorites = false;
 
   void _navigateToPokemonDetail(BuildContext context, int pokemonId) {
     Navigator.pushNamed(
@@ -56,6 +56,14 @@ class _HomePageState extends State<HomePage> {
       };
     }
 
+    if (selectedAbility.isNotEmpty) {
+      where['pokemon_v2_pokemonabilities'] = {
+        'pokemon_v2_ability': {
+          'name': {'_eq': selectedAbility}
+        }
+      };
+    }
+
     if (selectedGeneration > 0) {
       where['pokemon_v2_pokemonspecy'] = {
         'generation_id': {'_eq': selectedGeneration}
@@ -76,7 +84,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: HomeConstants.backgroundColor,
       appBar: AppBar(
-        centerTitle: true, // Centra el título
+        centerTitle: true,
         elevation: HomeConstants.appBarElevation,
         backgroundColor: HomeConstants.appBarColor,
         title: const Text(
@@ -113,16 +121,18 @@ class _HomePageState extends State<HomePage> {
                 FilterBar(
                   selectedType: selectedType,
                   selectedGeneration: selectedGeneration,
+                  selectedAbility: selectedAbility,
                   sortBy: sortBy,
                   sortAscending: sortAscending,
-                  showOnlyFavorites: showOnlyFavorites,  // Nuevo
+                  showOnlyFavorites: showOnlyFavorites,
                   onTypeChanged: (value) => setState(() => selectedType = value ?? ''),
                   onGenerationChanged: (value) => setState(() => selectedGeneration = value ?? 0),
+                  onAbilityChanged: (value) => setState(() => selectedAbility = value ?? ''),
                   onSortTypeChanged: (index) => setState(() {
                     sortBy = index == 0 ? HomeConstants.defaultSortField : HomeConstants.nameSortField;
                   }),
                   onSortDirectionChanged: () => setState(() => sortAscending = !sortAscending),
-                  onFavoritesToggle: () => setState(() => showOnlyFavorites = !showOnlyFavorites),  // Nuevo
+                  onFavoritesToggle: () => setState(() => showOnlyFavorites = !showOnlyFavorites),
                 ),
               ],
             ),

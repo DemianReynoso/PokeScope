@@ -1,34 +1,31 @@
 class PokemonQueries {
   // Query para la página principal
   static const String fetchPokemonList = """
-  query getPokemonForHomepage(
-    \$limit: Int, 
-    \$offset: Int,
-    \$where: pokemon_v2_pokemon_bool_exp,
-    \$orderBy: [pokemon_v2_pokemon_order_by!]
-  ) {
-    pokemon_v2_pokemon(
-      limit: \$limit, 
-      offset: \$offset,
-      where: \$where,
-      order_by: \$orderBy
-    ) {
-      id
-      name
-      pokemon_v2_pokemonsprites {
-        sprites(path: "other.official-artwork.front_default")
-      }
-      pokemon_v2_pokemontypes {
-        pokemon_v2_type {
-          name
-        }
-      }
-      pokemon_v2_pokemonspecy {
-        generation_id
+query getPokemonList(\$limit: Int!, \$offset: Int!, \$where: pokemon_v2_pokemon_bool_exp, \$orderBy: [pokemon_v2_pokemon_order_by!]) {
+  pokemon_v2_pokemon(limit: \$limit, offset: \$offset, where: \$where, order_by: \$orderBy) {
+    id
+    name
+    pokemon_v2_pokemontypes {
+      pokemon_v2_type {
+        name
       }
     }
+    pokemon_v2_pokemonabilities {
+      pokemon_v2_ability {
+        name
+      }
+    }
+    pokemon_v2_pokemonsprites {
+      sprites(path: "other.official-artwork.front_default")
+    }
   }
-  """;
+  pokemon_v2_pokemon_aggregate(where: \$where) {
+    aggregate {
+      count
+    }
+  }
+}
+""";
 
   // Query para la página de detalles
   static const String fetchPokemonDetails = """

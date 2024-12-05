@@ -416,9 +416,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                           Icons.arrow_right,
                           color: pokemon['id'] < maxId ? textColor : textColor.withOpacity(0.3),
                         ),
-                        onPressed: pokemon['id'] < maxId
-                            ? () => _handlePokemonNavigation(context, pokemon['id'] + 1)
-                            : null,
+                        onPressed: pokemon['id'] < maxId ? () => _handlePokemonNavigation(context, pokemon['id'] + 1) : null,
                       ),
                     ],
                   ),
